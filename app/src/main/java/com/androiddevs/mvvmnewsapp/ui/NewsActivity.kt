@@ -2,18 +2,23 @@ package com.androiddevs.mvvmnewsapp.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.androiddevs.mvvmnewsapp.R
-import kotlinx.android.synthetic.main.activity_news.bottomNavigationView
-import kotlinx.android.synthetic.main.activity_news.newsNavHostFragment
+import com.androiddevs.mvvmnewsapp.databinding.ActivityNewsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NewsActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityNewsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_news)
+        binding = ActivityNewsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        bottomNavigationView.setupWithNavController(newsNavHostFragment.findNavController())
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.newsNavHostFragment) as NavHostFragment
+        binding.bottomNavigationView.setupWithNavController(navHostFragment.findNavController())
     }
 }

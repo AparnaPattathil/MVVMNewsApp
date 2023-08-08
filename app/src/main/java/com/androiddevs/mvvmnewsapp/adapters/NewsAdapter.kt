@@ -6,18 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.androiddevs.mvvmnewsapp.R
+import com.androiddevs.mvvmnewsapp.databinding.ItemArticlePreviewBinding
 import com.androiddevs.mvvmnewsapp.models.Article
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.item_article_preview.view.ivArticleImage
-import kotlinx.android.synthetic.main.item_article_preview.view.tvDescription
-import kotlinx.android.synthetic.main.item_article_preview.view.tvPublishedAt
-import kotlinx.android.synthetic.main.item_article_preview.view.tvSource
-import kotlinx.android.synthetic.main.item_article_preview.view.tvTitle
+
 
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
-    inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ArticleViewHolder(val binding: ItemArticlePreviewBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val differCallback = object : DiffUtil.ItemCallback<Article>() {
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
@@ -32,27 +28,27 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
     val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        return ArticleViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_article_preview,
-                parent,
-                false
-            )
+        val binding = ItemArticlePreviewBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return ArticleViewHolder(binding)
     }
 
     override fun getItemCount(): Int = differ.currentList.size
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val currentArticle = differ.currentList[position]
-        holder.itemView.apply {
-            Glide.with(this).load(currentArticle.urlToImage).into(ivArticleImage)
-            tvSource.text = currentArticle.source.name
+
+        holder.binding.apply {
+            Glide.with(ivArticleImage.context).load(currentArticle.urlToImage).into(ivArticleImage)
+           tvSource.text = currentArticle.source.name
             tvTitle.text = currentArticle.title
             tvDescription.text = currentArticle.description
             tvPublishedAt.text = currentArticle.publishedAt
 
-            setOnClickListener {
+            itemContainer.setOnClickListener {
                 onItemClickListener?.let {
                     it(currentArticle)
                 }
